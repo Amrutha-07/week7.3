@@ -1,0 +1,102 @@
+// TipCalculatorController.java
+
+import javafx.application.Application;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+public class TipCalculator extends Application {
+
+    @FXML
+    private TextField billAmountField;
+
+    @FXML
+    private TextField tipPercentageField;
+
+    @FXML
+    private Label tipAmountLabel;
+
+    @FXML
+    private Label errorLabel;
+
+    @FXML
+    public void calculateTip() {
+        try {
+            double bill = Double.parseDouble(billAmountField.getText());
+            double percentage = Double.parseDouble(tipPercentageField.getText());
+
+            if (bill < 0 || percentage < 0) {
+                errorLabel.setText("Error: Enter positive values.");
+                tipAmountLabel.setText("");
+                return;
+            }
+
+            double tip = bill * percentage / 100;
+
+            tipAmountLabel.setText(
+                String.format("Tip Amount: $%.2f", tip));
+
+            errorLabel.setText("");
+
+        } catch (NumberFormatException e) {
+            errorLabel.setText(
+                "Error: Invalid input. Please enter numbers.");
+            tipAmountLabel.setText("");
+        }
+    }
+
+    @FXML
+    public void reset() {
+        billAmountField.clear();
+        tipPercentageField.clear();
+        tipAmountLabel.setText("");
+        errorLabel.setText("");
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+
+        VBox root = new VBox(10);
+        root.setAlignment(javafx.geometry.Pos.CENTER);
+
+        Label title = new Label("Tip Calculator");
+
+        billAmountField = new TextField();
+        billAmountField.setPromptText("Enter Bill Amount");
+
+        tipPercentageField = new TextField();
+        tipPercentageField.setPromptText("Enter Tip Percentage");
+
+        Button calculateButton = new Button("Calculate Tip");
+        Button resetButton = new Button("Reset");
+
+        tipAmountLabel = new Label();
+        errorLabel = new Label();
+
+        calculateButton.setOnAction(e -> calculateTip());
+        resetButton.setOnAction(e -> reset());
+
+        root.getChildren().addAll(
+            title,
+            billAmountField,
+            tipPercentageField,
+            calculateButton,
+            resetButton,
+            tipAmountLabel,
+            errorLabel
+        );
+
+        Scene scene = new Scene(root, 400, 350);
+
+        stage.setTitle("Tip Calculator");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
